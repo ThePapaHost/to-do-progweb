@@ -1,0 +1,422 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: Helvetica;
+	color: #323232;
+	border-radius: none;
+}
+body {
+	font-size: 1em;
+	background: #F8FAB7;
+}
+
+textarea:focus, input:focus{
+	outline: none;
+}
+
+#login-container a, label {
+	font-size: .8rem;
+}
+
+#login-container a:hover{
+	color: #08558B;
+}
+
+#area-cabecalho h1 {
+	color: #4e4e4e;
+}
+#login-container h2 {
+	font-size: 2em;
+	color: #4e4e4e;
+}
+
+#area-cabecalho h3 {
+	font-size: 0.5em;
+	color: #4e4e4e;
+}
+
+#area-cabecalho {
+	font-size: 2em;
+	margin-top: 50px;
+	margin-bottom: -30px;
+	padding: 15px;
+	text-align: center;
+}
+
+/*Container Login*/
+
+#login-container{
+
+	background-color: #FFF;
+	margin-left: auto;
+	margin-right: auto;
+	width: 400px;
+	padding: 20px 30px;
+	padding-top: 50px;
+	margin-top: 10vh;
+	border-radius: 10px;
+	text-align: center;
+}
+
+/*Formulario*/
+
+#login-container form {
+	margin-top: 30px;
+	margin-bottom: 40px;
+}
+
+#login-container label, input {
+	display: block;
+	width: 100%;
+	text-align: left;
+}
+
+#area-esquerda label, input {
+	display: block;
+	width: 100%;
+	text-align: left;
+}
+
+#login-container label {
+	font-weight: bold;
+}
+
+#login-container input {
+	border-bottom: 5px solid #323232;
+	padding: 10px;
+	font-size: 1rem;
+	margin-bottom: 20px;
+}
+
+#area-esquerda input {
+	border-bottom: 5px solid #323232;
+	padding: 10px;
+	font-size: 1rem;
+	margin-bottom: 20px;
+}
+
+#login-container input:focus{
+	border-bottom: 5px solid #65AD21;
+	transition: .5s;
+}
+
+#area-esquerda input:focus{
+	border-bottom: 5px solid #65AD21;
+	transition: .5s;
+}
+
+#forgot-pass {
+	text-align: right;
+	display: block;
+}
+
+#login-container input[type="button"], #login-container input[type="submit"] {
+	text-align: center;
+	text-transform: uppercase;
+	font-weight: bold;
+	border: none;
+	border-radius: 20px;
+	margin-top: 30px;
+	color: #FFF;
+	background-color: #65AD21;
+	cursor: pointer;
+}
+
+#area-esquerda input[type="submit"]{
+	text-align: center;
+	text-transform: uppercase;
+	font-weight: bold;
+	border: none;
+	border-radius: 20px;
+	margin-top: 30px;
+	color: #FFF;
+	background-color: #65AD21;
+	cursor: pointer;
+}
+
+#login-container input[type="button"]:hover {
+	background-color: #1B223C;
+	transition: .5s;
+
+}
+
+#area-esquerda input[type="submit"]:hover {
+	background-color: #1B223C;
+	transition: .5s;
+
+}
+
+/*Registrar*/
+
+#register-container p {
+	margin-bottom: 10px;
+}
+
+/*Pagina Inicio*/
+
+#inicio-cabecalho {
+	font-size: 2em;
+	padding: 15px;
+	text-align: center;
+}
+
+#inicio-cabecalho input {
+	width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+	border-top: 5px solid #323232;
+	border-radius: 15px;
+	padding: 15px;
+	font-size: 1rem;
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+@media (max-width: 400px) {
+	#inicio-cabecalho input {
+		min-width: 92vw;
+		width: auto;
+		max-width: 100vw;
+		padding-left: 0;
+		padding-right: 0;
+		margin: 0;
+	}
+}
+
+#inicio-perfil {
+	width: 120px;
+    height: 120px;
+	border-radius: 100%;
+	background-color: white;
+	position: relative;
+	border: 2px solid transparent;
+	box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
+    transition: all ease-in-out .3s;
+    float: right;
+    margin-top: -105px;
+    margin-right: 5%;
+}
+
+#inicio-perfil div {
+	font-size: 0.5em;
+	margin-top: 49px;
+	text-transform: uppercase;
+	font-weight: bold;
+	text-align: center;
+}
+
+#area-esquerda {
+	width: 30vh;
+    height: 300px;
+    padding: 5px;
+	background-color: white;
+	border-radius: 20px;
+	margin-left: 30px;
+	margin-top: 50px;
+}
+
+@media (max-width: 400px) {
+	#area-esquerda {
+		width: 100vw;
+		margin-left: 0;
+		margin-top: 10px;
+	}
+}
+
+#area-esquerda input {
+	display: block;
+	width: 80%;
+	text-align: left;
+	margin: 0 auto;
+}
+
+#area-esquerda input {
+	border-bottom: 5px solid #323232;
+	padding: 20px;
+	font-size: 1rem;
+	margin-bottom: 20px;
+}
+
+#area-esquerda input:focus{
+	border-bottom: 5px solid #65AD21;
+	transition: .5s;
+}
+
+#area-esquerda input[type="submit"]{
+	text-align: center;
+	text-transform: uppercase;
+	font-weight: bold;
+	border: none;
+	border-radius: 10px;
+	margin-top: 30px;
+	color: #FFF;
+	background-color: #A1CEF8;
+	cursor: pointer;
+}
+
+#area-esquerda input[type="submit"]:hover {
+	background-color: #65AD21;
+	transition: .5s;
+
+}
+
+#principal-container {
+	width: 60vh;
+    height: 500px;
+    padding: 5px;
+	background-color: white;
+	border-radius: 20px;
+	margin-left: 500px;
+	margin: auto;
+}
+
+#principal-container input {
+	display: block;
+	width: 80%;
+	text-align: left;
+	margin: 0 auto;
+	border: 2px solid #323232;
+	padding: 15px;
+	font-size: 1rem;
+	margin-bottom: 20px;
+	border-radius: 15px;
+	margin-top: 10px;
+	text-align: center;
+}
+
+#tasksLister {
+	display: flex;
+	flex-direction: row;
+	width: 90%;
+	text-align: left;
+	margin: 0 auto;
+	border: 2px solid #323232;
+	padding: 15px;
+	font-size: 1rem;
+	margin-bottom: 20px;
+	border-radius: 15px;
+	margin-top: 10px;
+	text-align: center;
+	justify-content: space-evenly;
+}
+
+#tasksLister:hover {
+	background-color: #A1CEF8;
+	transition: .5s;
+	cursor: pointer;
+}
+
+#principal-container button {
+	display: inline-flex;
+	width: 25%;
+	text-align: left;
+	margin: 15px 15px;
+	border: 2px solid #323232;
+	padding: 15px;
+	font-size: 20px;
+	border-radius: 15px;
+	margin-top: 10px;
+	cursor: pointer;
+}
+
+#principal-container button:hover {
+	background-color: #65AD21;
+    color: #fff;
+}
+
+#secundario-container input{
+	width: 120px; 
+	padding: 10px; 
+	display: inline;
+	margin-left: 30px;
+	margin-top: -90px;
+}
+
+#secundario-container input[type="submit"]:hover {
+	background-color: #65AD21;
+	transition: .5s;
+	cursor: pointer;
+}
+
+#lista-container input{
+	width: 100px; 
+	padding: 10px; 
+	display: inline;
+	margin-left: 30px;
+	margin-top: -90px;
+}
+
+#calendario-container input{
+	width: 100px; 
+	padding: 10px; 
+	display: inline;
+	margin-left: 15px;
+	margin-top: -90px;
+}
+
+#ad-tarefa input {
+		display: flex;
+		justify-content: space-around;
+		flex-direction: row;
+		background-color: #98FB98;
+		color: blue;
+		border-radius: 15px;
+		cursor: pointer;
+	
+}
+
+#ad-tarefa button:hover {
+	background-color: #65AD21;
+	transition: .5s;
+	cursor: pointer;
+
+}
+
+#principal-container input[type="date"] {
+	width: 200px;
+	margin-right: 60px;
+	margin-top: -30px;
+}
+
+@media (max-width: 400px) {
+	div.MuiBox-root {
+		width: 100vw;
+    	flex-direction: column;
+		padding: 0;
+	}
+	div.MuiContainer-root {
+		padding: 0;
+	}
+	#principal-container {
+		width: 100vw;
+		margin-left: 0;
+		margin-top: 10px;
+		height: auto;
+	}
+
+	#principal-container input[type="date"] {
+		margin-top: 0px;
+	}
+	#inicio-cabecalho {
+		display: flex;
+		flex-direction: column;
+		padding: 5px;
+	}
+	#inicio-perfil {
+		margin-top: 5px;
+		margin-right: 0px;
+		max-width: 100vw;
+		width: auto;
+		min-width: 90vw;
+		height:auto;
+		border-radius: 15px;
+	}
+
+	#inicio-perfil div {
+		margin-top: 0px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+}
