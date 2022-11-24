@@ -4,12 +4,3 @@
     -webkit-transform: translate(-50%, 0);
     transform: translate(-50%, 0);
 }
-
-@media (max-width: 400px) {
-    .TaskAdd-center {
-        position: relative;
-        left: 0;
-        -webkit-transform: translate(0, 0);
-        transform: translate(0, 0);
-    }
-}

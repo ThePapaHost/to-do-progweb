@@ -1,0 +1,13 @@
+rota = caminho para acessar demais componentes da aplicação
+
+async = Uma função declarada como async significa que o valor de retorno 
+da função será, "por baixo dos panos", uma Promise. 
+Se a Promise se resolver normalmente, o objeto-Promise retornará o valor.
+
+Promise = É um objeto usado para realizar processamentos assíncronos,
+ esse objeto guarda um valor que pode estar disponível agora, 
+no futuro ou nunca. Isso permite o tratamento de eventos ou ações que acontecem 
+de forma assíncrona em casos de sucessos ou falhas
+
+formData = Criar formulários em HTML durante a execução usando JavaScript.
+MUI = biblioteca do react que tem muitos componentes prontos.

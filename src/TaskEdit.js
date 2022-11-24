@@ -1,20 +1,23 @@
-import { Container } from '@mui/material';
+import { Snackbar, Alert, Box, Container, Paper, Divider, ButtonGroup, Button, Backdrop, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import "./TaskAdd.css";
+import { CustomizedInputBaseDark } from './CustomInput';
+import { TaskStatus, TaskStatusTranslated } from './TaskStatus';
+import { TaskCategories, TaskCategoriesTranslated } from './TaskCategory';
+import { TaskColors } from './TaskColors';
 import { db } from './firebase.config';
 import { useParams } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from '@firebase/firestore';
-import "./estilo.css"
-
-const now = new Date();
-const todayFormatted = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 
 export default function TaskEdit(props) {
-    const [ status, setStatus ] = useState('Realizada');
+    const [snackMessage, setSnackMessage] = useState("");
+    const [snackSeverity, setSnackSeverity] = useState("success");
+    const [openSnack, setOpenSnack] = useState(false);
+    const [openBackdrop, setOpenBackdrop] = useState(true);
+    const [ status, setStatus ] = useState(TaskStatus[0]);
     const [ title, setTitle ] = useState("");
-    const [ category, setCategory ] = useState('Trabalho');
-    const [ color, setColor ] = useState("#F34146");
-    const [ calendar, setCalendar ] = useState(todayFormatted);	
+    const [ category, setCategory ] = useState(TaskCategories[0]);
+    const [ color, setColor ] = useState("red");
     const { id } = useParams();
 
     useEffect(() => {
@@ -30,15 +33,26 @@ export default function TaskEdit(props) {
                     setStatus(doc.status);
                     setCategory(doc.category);
                     setColor(doc.color);
-                    setCalendar(doc.calendar);
                 }
+                setOpenBackdrop(false);
             });
         }
-    }, [title, id, setTitle, setStatus, setCategory, setColor]);
+    }, [title, id, setTitle, setStatus, setCategory, setColor, setOpenBackdrop]);
+
+    const handleCloseSnack = () => {
+        setOpenSnack(false);
+    };
+
+    const handleCloseBackdrop = () => {
+        setOpenBackdrop(false);
+    };
 
     const handleEditTask = async () => {
+        setOpenBackdrop(true);
         if (title === "") {
-            alert("Preencha o título da tarefa");
+            setSnackMessage("Preencha o título da tarefa");
+            setSnackSeverity("error");
+            setOpenSnack(true);
             return;
         }
 
@@ -48,82 +62,17 @@ export default function TaskEdit(props) {
             status: status,
             category: category,
             color: color,
-            calendar: calendar
         });
-        alert("Tarefa atualizada com sucesso!");
-        setTimeout(() => {
-            window.location.href = "/tasks";
-        }, 500);
+        setOpenBackdrop(false);
+        setSnackMessage("Tarefa atualizada com sucesso!");
+        setSnackSeverity("success");
+        setOpenSnack(true);
     };
 
     return (
-        <main>
-            <div id="area-cabecalho">
-                <h1>Editar Tarefa</h1>
-            </div>
-        <div className='TaskAdd-center' style={{ marginTop: '5%' }}>
+        <div className='TaskAdd-center'>
             <Container maxWidth="xl" sx={{ mb: 4 }}>
-                <div id="principal-container">
-                    <input type="text" name="tarefa" value={title} onChange={(event) => setTitle(event.target.value)} id="tarefa" placeholder="Titulo da tarefa" autoComplete="off" />
-                    <hr style={{border: "inset"}} />
-                    <div style={{margin: 'auto', marginLeft: '10px', marginTop: '30px', fontWeight: 'bold'}}>STATUS</div>
-                    <div id="secundario-container" style={{marginLeft: '85px', marginTop: '-18px'}}>
-                        <input type="submit" style={{
-                            backgroundColor: status === 'Realizado' && '#65AD21',
-                        }}
-                        onClick={() => setStatus('Realizado')} value="Realizado" />
-                        
-                        <input type="submit" style={{
-                            backgroundColor: status === 'Pendente' && '#65AD21',
-                        }}
-                        onClick={() => setStatus('Pendente')} value="Pendente" />
-                        
-                        <input type="submit" style={{
-                            backgroundColor: status === 'Cancelado' && '#65AD21',
-                        }}
-                        onClick={() => setStatus('Cancelado')} value="Cancelado" />
-                    </div>
-
-                    <hr style={{border: "inset"}} />
-
-                    <div style={{margin: 'auto', marginLeft: '10px', marginTop: '30px', fontWeight: 'bold'}}>CATEGORIA</div>
-                    <div id="secundario-container" style={{marginLeft: '85px', marginTop: '-18px'}}>
-                        <input type="submit" style={{
-                            backgroundColor: category === 'Trabalho' && '#65AD21',
-                        }} 
-                        onClick={() => setCategory('Trabalho')} value="Trabalho"/>
-                        
-                        <input type="submit" style={{
-                            backgroundColor: category === 'Lazer' && '#65AD21',
-                        }} 
-                        onClick={() => setCategory('Lazer')}
-                        value="Lazer"/>
-
-                        <input type="submit" style={{
-                            backgroundColor: category === 'Estudo' && '#65AD21',
-                        }} 
-                        onClick={() => setCategory('Estudo')}
-                        value="Estudo"/>
-                    </div>
-
-                    <hr style={{border: "inset"}} />
-
-                    <div style={{margin: 'auto', marginLeft: '10px', marginTop: '30px', fontWeight: 'bold'}}>TAG</div>
-                    <div id="secundario-container" style={{marginLeft: '85px', marginTop: '-18px'}}>
-                        <input type="submit" onClick={() => setColor('#F34146')} style={{backgroundColor: '#F34146', opacity: color === '#F34146' ? 1 : 0.5}} value="Urgente"/>
-                        <input type="submit" onClick={() => setColor('#ECF137')} style={{backgroundColor: '#ECF137', opacity: color === '#ECF137' ? 1 : 0.5}} value="Importante"/>
-                        <input type="submit" onClick={() => setColor('#69F42D')} style={{backgroundColor: '#69F42D', opacity: color === '#69F42D' ? 1 : 0.5}} value="Circunstancial"/>
-                    </div>
-
-                    <hr style={{border: "inset"}} />
-                    <div style={{margin: 'auto', marginLeft: '10px', marginTop: '30px', fontWeight: 'bold'}}>DATA DE CONCLUSÃO:</div>
-                    <input type="date" onChange={(event) => setCalendar(event.target.value)} value={calendar} name="data_conclusao" id="data_conclusao" required />
-                    <div id="ad-tarefa">
-                        <input type="submit" onClick={() => handleEditTask()} value="Editar Tarefa"/>
-                    </div>
-                </div>
-                {
-                    /*<Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+                <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
                     <CustomizedInputBaseDark value={title} onChange={(event) => setTitle(event.target.value)}/>
                     <Divider sx={{ my: 2 }} />
                     <Box
@@ -218,9 +167,18 @@ export default function TaskEdit(props) {
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', my: 2 }}>
                         <Button variant="contained" onClick={handleEditTask}>Atualizar Tarefa</Button>
                     </Box>
-                        </Paper>*/}
+                </Paper>
             </Container>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleCloseBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+                <Alert onClose={handleCloseSnack} severity={snackSeverity} sx={{ width: '100%' }}>{snackMessage}</Alert>
+            </Snackbar>
         </div>
-        </main>
     )
 }

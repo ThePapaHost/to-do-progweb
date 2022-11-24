@@ -1,0 +1,36 @@
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #282c34;
+  justify-content: center;
+  color: white;
+  padding-bottom: 40px;
+}
+
+.App-logo {
+  height: 2rem;
+  pointer-events: none;
+  background-color: yellow;
+  border-radius: 5px;
+  float: right;
+  margin-left: 10px;
+}
+
+.App-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
+.App-header:hover {
+  color: red;
+  cursor: pointer;
+}
+
+.App-link {
+  color: #61dafb;
+}

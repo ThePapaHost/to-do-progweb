@@ -1,13 +1,14 @@
 import SignIn from './SignIn';
 import Home from './Home';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Header from './Header';
 import SignUp from './Signup';
 import TaskEdit from './TaskEdit';
-import "./estilo.css"
 
 export default function App() {
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />        

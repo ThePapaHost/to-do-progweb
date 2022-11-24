@@ -1,13 +1,16 @@
-import { Box, Container, Typography, Chip } from '@mui/material';
+import { Box, Container, Paper, ButtonGroup, Button, Divider, Typography, Chip, Backdrop, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import "./TaskList.css";
+import { TaskStatus, TaskStatusTranslated } from './TaskStatus';
 import { db } from './firebase.config';
 import { query, collection, where, getDocs } from '@firebase/firestore';
+import { TaskCategories, TaskCategoriesTranslated } from './TaskCategory';
 
 export default function TaskList(props) {
     const [ user, setUser ] = useState({});
     const [ tasks, setTasks ] = useState([]);
-    const [ category, setCategory ] = useState('Trabalho');
+    const [ category, setCategory ] = useState(TaskCategories[0]);
+    const [openBackdrop, setOpenBackdrop] = useState(true);
 
     useEffect(() => {
         if (Object.keys(user).length === 0) {
@@ -22,6 +25,7 @@ export default function TaskList(props) {
                     tasks = tasks.filter(task => task.title.includes(props.searchTerm));
                 }
                 setTasks(tasks);
+                setOpenBackdrop(false);
             })
         }
     }, [setUser, props, user]);
@@ -30,74 +34,120 @@ export default function TaskList(props) {
         window.location.href = "/tasks";
     };
 
-    const parseDate = (date) => {
-        const dateObj = new Date(date);
-        return `${dateObj.getDate() + 1}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`;
+    const handleCloseBackdrop = () => {
+        setOpenBackdrop(false);
     };
 
     return (
         <div className='TaskAdd-center'>
             <Container maxWidth="xl" sx={{ mb: 4 }}>
-                <div id="principal-container">
-                    <div id="secundario-container" style={{
-                        marginTop: '30px',
-                    }}>
-                        <input type="submit" style={{
-                            backgroundColor: category === 'Trabalho' && '#65AD21',
-                            marginTop: 0,
-                        }} 
-                        onClick={() => setCategory('Trabalho')} value="Trabalho"/>
-                        
-                        <input type="submit" style={{
-                            backgroundColor: category === 'Lazer' && '#65AD21',
-                            marginTop: 0,
-                        }} 
-                        onClick={() => setCategory('Lazer')}
-                        value="Lazer"/>
+                <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            '& > *': {
+                                m: 1,
+                            },
+                        }}
+                        >
+                        <ButtonGroup variant="outlined" aria-label="outlined button group">
+                            {
+                                TaskCategories.map((taskCategory, index) => {
+                                    return (
+                                        <Button 
+                                        variant={category === taskCategory ? 'contained': 'outlined' } 
+                                        key={index} 
+                                        onClick={() => setCategory(taskCategory)}
+                                        sx={{ width: 150, height: 40 }}
+                                        >{TaskCategoriesTranslated[index]}
+                                        </Button>
+                                    )
+                                })
+                            }
+                            <Button 
+                                variant={category === "ALL" ? 'contained': 'outlined' } 
+                                onClick={() => setCategory("ALL")}
+                                sx={{ width: 150, height: 40 }}
+                                >Todas
+                            </Button>
+                        </ButtonGroup>
+                    </Box>
+                    <Divider sx={{ my: 2 }} />
 
-                        <input type="submit" style={{
-                            backgroundColor: category === 'Estudo' && '#65AD21',
-                            marginTop: 0,
-                        }} 
-                        onClick={() => setCategory('Estudo')}
-                        value="Estudo"/>
-                    </div>
-                    <hr style={{border: "inset"}} />
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        {
+                            tasks.filter((task) => category === "ALL" || task.category === category).map((task, index) => {
+                                return (
+                                    <Container key={index} className="TaskList-container" sx={{ 
+                                        width: '100%', 
+                                        margin: 1, 
+                                        '&:hover': {
+                                            backgroundColor: '#e0e0e0',
+                                            cursor: 'pointer'
+                                        }}}>
+                                        <div
+                                            onClick={() => window.location.href = "/tasks/" + task.id}
+                                            style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                                width: '100%',
+                                                height: '100%',
+                                                padding: 1,
+                                                
+                                            }}
+                                        >
+                                            <span style={{
+                                                borderRadius: '50%',
+                                                display: 'inline-block',
+                                                width: 20,
+                                                height: 20,
+                                                backgroundColor: task.color
+                                            }}/>
+                                            <Typography
+                                                variant='h5'
+                                                sx={{
+                                                    padding: 1,
+                                                }}
+                                            >
+                                            {task.title}
+                                            </Typography>
+
+                                            {
+                                                category === "ALL" &&
+                                                <Typography
+                                                    variant='h6'
+                                                    sx={{
+                                                        float: 'right',
+                                                        marginLeft: 'auto',
+                                                    }}
+                                                >
+                                                {TaskCategoriesTranslated[TaskCategories.indexOf(task.category)]}
+                                                </Typography>
+                                            }
+
+                                            <Typography
+                                                variant='h6'
+                                                style={{
+                                                    float: 'right',
+                                                    marginLeft: 'auto',
+                                                }}
+                                            >
+                                            {TaskStatusTranslated[TaskStatus.indexOf(task.status)]}
+                                            </Typography>
+                                        </div>
+                                    </Container>
+                                )
+                            })
+                        }
+                    </Box>
 
                     {
-                        tasks.filter((task) => task.category === category).map((task, index) => {
-                            return (
-                                <div id="tasksLister"
-                                    key={index}
-                                    onClick={() => window.location.href = "/tasks/" + task.id}>
-                                    <span style={{
-                                        borderRadius: '50%',
-                                        border: '1px solid black',
-                                        display: 'inline-block',
-                                        width: 20,
-                                        height: 20,
-                                        backgroundColor: task.color
-                                    }}/>
-                                    <p>
-                                    {task.title}
-                                    </p>
-                                    <p>|</p>
-                                    <p>
-                                    {parseDate(task.calendar)}
-                                    </p>
-                                    <p>-</p>
-                                    <p>
-                                    {task.status.toLowerCase()}
-                                    </p>
-                                </div>
-                            )
-                        })
-                    }
-                
-                    {
-                        tasks.filter((task) => task.category === category).length === 0 && 
+                        tasks.length === 0 && 
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} mb>
-                            <Typography variant='h7'>Nenhuma tarefa encontrada</Typography>
+                            <Typography variant='h5'>Nenhuma tarefa encontrada.</Typography>
                         </Box>
                     }
                     {
@@ -109,8 +159,16 @@ export default function TaskList(props) {
                             </Typography>
                         </Box>
                     }
-                </div>
+                    
+                </Paper>
             </Container>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleCloseBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </div>
     )
 }

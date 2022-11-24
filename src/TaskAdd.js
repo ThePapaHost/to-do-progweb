@@ -1,30 +1,38 @@
-import { Container} from '@mui/material';
+import { Snackbar, Alert, Box, Container, Paper, Divider, ButtonGroup, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
+import "./TaskAdd.css";
+import { CustomizedInputBaseDark } from './CustomInput';
+import { TaskStatus, TaskStatusTranslated } from './TaskStatus';
+import { TaskCategories, TaskCategoriesTranslated } from './TaskCategory';
+import { TaskColors } from './TaskColors';
 import { db } from './firebase.config';
 import { addDoc, collection } from '@firebase/firestore';
-import './TaskAdd.css'
-
-const now = new Date();
-const todayFormatted = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 
 export default function TaskAdd(props) {
+    const [snackMessage, setSnackMessage] = useState("");
+    const [snackSeverity, setSnackSeverity] = useState("success");
+    const [openSnack, setOpenSnack] = useState(false);
     const [ user, setUser ] = useState({});
-    const [ status, setStatus ] = useState('Realizado');
+    const [ status, setStatus ] = useState(TaskStatus[0]);
     const [ title, setTitle ] = useState("");
-    const [ category, setCategory ] = useState('Trabalho');
-    const [ color, setColor ] = useState("#F34146");
-    const [ calendar, setCalendar ] = useState(todayFormatted);
+    const [ category, setCategory ] = useState(TaskCategories[0]);
+    const [ color, setColor ] = useState("red");
 
     useEffect(() => {
-        console.log(props.user)
         if (Object.keys(user).length === 0) {
             setUser(props.user)
         }
     }, [setUser, props, user]);
 
+    const handleCloseSnack = () => {
+        setOpenSnack(false);
+    };
+
     const handleAddTask = async () => {
         if (title === "") {
-            alert("Preencha o título da tarefa");
+            setSnackMessage("Preencha o título da tarefa");
+            setSnackSeverity("error");
+            setOpenSnack(true);
             return;
         }
 
@@ -33,75 +41,118 @@ export default function TaskAdd(props) {
             status: status,
             category: category,
             color: color,
-            calendar: calendar,
             user: user.id
         })
-        alert("Tarefa criada com sucesso!");
+        setSnackMessage("Tarefa criada com sucesso!");
+        setSnackSeverity("success");
+        setOpenSnack(true);
+        setTitle("");
     };
 
     return (
         <div className='TaskAdd-center'>
             <Container maxWidth="xl" sx={{ mb: 4 }}>
-                    <div id="principal-container">
-                        <input type="text" name="tarefa" value={title} onChange={(event) => setTitle(event.target.value)} id="tarefa" placeholder="Titulo da tarefa" autoComplete="off" />
-                        <hr style={{border: "inset"}} />
-                        <div style={{margin: 'auto', marginLeft: '10px', marginTop: '30px', fontWeight: 'bold'}}>STATUS</div>
-                        <div id="secundario-container" style={{marginLeft: '85px', marginTop: '-18px'}}>
-                            <input type="submit" style={{
-                                backgroundColor: status === 'Realizado' && '#65AD21',
-                            }}
-                            onClick={() => setStatus('Realizado')} value="Realizado" />
-                            
-                            <input type="submit" style={{
-                                backgroundColor: status === 'Pendente' && '#65AD21',
-                            }}
-                            onClick={() => setStatus('Pendente')} value="Pendente" />
-                            
-                            <input type="submit" style={{
-                                backgroundColor: status === 'Cancelado' && '#65AD21',
-                            }}
-                            onClick={() => setStatus('Cancelado')} value="Cancelado" />
-                        </div>
+                <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+                    <CustomizedInputBaseDark value={title} onChange={(event) => setTitle(event.target.value)}/>
+                    <Divider sx={{ my: 2 }} />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            '& > *': {
+                                m: 1,
+                            },
+                        }}
+                        >
+                        <ButtonGroup variant="outlined" aria-label="outlined button group">
+                            {
+                                TaskStatus.map((taskStatus, index) => {
+                                    return (
+                                        <Button 
+                                        variant={status === taskStatus ? 'contained': 'outlined' } 
+                                        key={index} 
+                                        onClick={() => setStatus(taskStatus)}
+                                        sx={{ width: 150, height: 40 }}
+                                        >{TaskStatusTranslated[index]}
+                                        </Button>
+                                    )
+                                })
+                            }
+                        </ButtonGroup>
+                    </Box>
+                    <Divider sx={{ my: 2 }} />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            '& > *': {
+                                m: 1,
+                            },
+                        }}
+                        >
+                        <ButtonGroup variant="outlined" aria-label="outlined button group">
+                        {
+                            TaskCategories.map((taskCategory, index) => {
+                                return (
+                                    <Button 
+                                        variant={category === taskCategory ? 'contained': 'outlined' } 
+                                        key={index} 
+                                        onClick={() => setCategory(taskCategory)}
+                                        sx={{ width: 150, height: 40}}
+                                    >{TaskCategoriesTranslated[index]}
+                                    </Button>
+                                )
+                            })
+                        }
+                        </ButtonGroup>
+                    </Box>
+                    <Divider sx={{ my: 2 }} />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            '& > *': {
+                                m: 1,
+                            },
+                        }}
+                        >
+                        <ButtonGroup variant="outlined" aria-label="outlined button group">
+                            {
+                                TaskColors.map((taskColor, index) => {
+                                    return (
+                                        <Button 
+                                        key={index} 
+                                        variant={color === taskColor ? 'contained': 'outlined' } 
+                                        onClick={() => setColor(taskColor)}
+                                        sx={{ 
+                                            backgroundColor: taskColor,
+                                            opacity: color === taskColor ? 1 : 0.3,
+                                            height: 40, 
+                                            width: 150,
+                                            '&:hover': {
+                                                backgroundColor: taskColor,
+                                                boxShadow: 3,
+                                            }
+                                        }}
+                                        ></Button>
+                                    )
+                                })
+                            }
+                        </ButtonGroup>
+                    </Box>
 
-                        <hr style={{border: "inset"}} />
-
-                        <div style={{margin: 'auto', marginLeft: '10px', marginTop: '30px', fontWeight: 'bold'}}>CATEGORIA</div>
-                        <div id="secundario-container" style={{marginLeft: '85px', marginTop: '-18px'}}>
-                            <input type="submit" style={{
-                                backgroundColor: category === 'Trabalho' && '#65AD21',
-                            }} 
-                            onClick={() => setCategory('Trabalho')} value="Trabalho"/>
-                            
-                            <input type="submit" style={{
-                                backgroundColor: category === 'Lazer' && '#65AD21',
-                            }} 
-                            onClick={() => setCategory('Lazer')}
-                            value="Lazer"/>
-
-                            <input type="submit" style={{
-                                backgroundColor: category === 'Estudo' && '#65AD21',
-                            }} 
-                            onClick={() => setCategory('Estudo')}
-                            value="Estudo"/>
-                        </div>
-
-                        <hr style={{border: "inset"}} />
-
-                        <div style={{margin: 'auto', marginLeft: '10px', marginTop: '30px', fontWeight: 'bold'}}>TAG</div>
-                        <div id="secundario-container" style={{marginLeft: '85px', marginTop: '-18px'}}>
-                            <input type="submit" onClick={() => setColor('#F34146')} style={{backgroundColor: '#F34146', opacity: color === '#F34146' ? 1 : 0.5}} value="Urgente"/>
-                            <input type="submit" onClick={() => setColor('#ECF137')} style={{backgroundColor: '#ECF137', opacity: color === '#ECF137' ? 1 : 0.5}} value="Importante"/>
-                            <input type="submit" onClick={() => setColor('#69F42D')} style={{backgroundColor: '#69F42D', opacity: color === '#69F42D' ? 1 : 0.5}} value="Circunstancial"/>
-                        </div>
-
-                        <hr style={{border: "inset"}} />
-                        <div style={{margin: 'auto', marginLeft: '10px', marginTop: '30px', fontWeight: 'bold'}}>DATA DE CONCLUSÃO:</div>
-                        <input type="date" onChange={(event) => setCalendar(event.target.value)} value={calendar} name="data_conclusao" id="data_conclusao" required />
-                        <div id="ad-tarefa">
-                            <input type="submit" onClick={() => handleAddTask()} value="Adicionar Tarefa"/>
-                        </div>
-                    </div>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', my: 2 }}>
+                        <Button variant="contained" onClick={handleAddTask}>Adicionar Tarefa</Button>
+                    </Box>
+                </Paper>
             </Container>
+
+            <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+                <Alert onClose={handleCloseSnack} severity={snackSeverity} sx={{ width: '100%' }}>{snackMessage}</Alert>
+            </Snackbar>
         </div>
     )
 }

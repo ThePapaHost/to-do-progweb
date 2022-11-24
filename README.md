@@ -8,7 +8,7 @@ A aplicação persiste logins no `localStorage` criando uma session.
 ## Como rodar
 1. Instale as dependencias
 ```
-yarn, node.js, git
+yarn
 ```
 2. Modifique o arquivo `firebase.config.js`
 ```js

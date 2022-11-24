@@ -1,6 +1,6 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import { Navigate } from 'react-router-dom';
-import { Box} from '@mui/material';
+import { Snackbar, Alert, Box, Tabs, Tab } from '@mui/material';
+import { Logout } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom'
 import "./Home.css";
@@ -26,8 +26,18 @@ function TabPanel(props) {
       </div>
     );
 }
+  
+function a11yProps(index) {
+    return {
+      id: `vertical-tab-${index}`,
+      'aria-controls': `vertical-tabpanel-${index}`,
+    };
+}
 
 export default function Home() {
+    const [snackMessage, setSnackMessage] = useState("");
+    const [snackSeverity, setSnackSeverity] = useState("success");
+    const [openSnack, setOpenSnack] = useState(false);
     const [ user, setUser ] = useState({});
     const [value, setValue] = useState(0);
     const [searchParams] = useSearchParams();
@@ -39,52 +49,49 @@ export default function Home() {
         if (Object.keys(user).length === 0 && loggedInUser) {
             const newUser = JSON.parse(loggedInUser);
             setUser(newUser);
+            /*setSnackMessage(`Bem vindo, ${newUser.name}`);
+            setSnackSeverity("success");
+            setOpenSnack(true);*/
         }
         if (location.pathname === "/tasks" && value !== 1) {
             setValue(1);
         }
-    }, [setUser, loggedInUser, user, setValue, location, searchParams, value]);
+    }, [setUser, loggedInUser, user, setSnackMessage, setSnackSeverity, setOpenSnack, setValue, location, searchParams, value]);
 
     if (!loggedInUser) {
         return <Navigate to="/signin" />
     }
 
-    // eslint-disable-next-line no-unused-vars
+    const handleCloseSnack = () => {
+        setOpenSnack(false);
+    };
+
     const doLogout = () => {
         localStorage.removeItem("user");
         window.location.reload();
     }
 
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
     return (
         <>
-            <div id="inicio-cabecalho">
-                <input type="text" name="tarefa" 
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        window.location.href = "/tasks?q=" + e.target.value;
-                    }
-                }}
-                id="tarefa-input" placeholder="Pesquise uma tarefa" autoComplete="off" />
-                <div id="inicio-perfil">
-                    <div>perfil</div>
-                </div>
-            </div>
-            <hr style={{marginTop: '6px', border: '3px inset'}} />
             <Box
-                sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '82vh', backgroundColor: '#F8FAB7' }}
+                sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '82vh' }}
                 >
-                <div id="area-esquerda">
-                    <a href="#" style={{ textDecoration: 'none'  }}>
-                        <input type="submit" style={{ border: value === 0? '1px solid black' : 'none' }} onClick={() => window.location.href = '/'} value="+ criar tarefa" />
-                    </a>
-                    <a href="#" style={{ textDecoration: 'none'}}>
-                        <input type="submit" style={{ border: value === 1? '1px solid black' : 'none' }} onClick={() => setValue(1)} value="lista de tarefas" />
-                    </a>
-                    <a href="#" style={{ textDecoration: 'none'}}>
-                        <input type="submit" value="calendário" />
-                    </a>
-                </div>
+                <Tabs
+                    orientation="vertical"
+                    variant="scrollable"
+                    value={value}
+                    onChange={handleChange}
+                    aria-label="Vertical tabs example"
+                    sx={{ borderRight: 1, borderColor: 'divider' }}
+                >
+                    <Tab label="Criar Tarefa" {...a11yProps(0)} />
+                    <Tab label="Lista de Tarefas" {...a11yProps(1)} />
+                    <Tab label={<Logout />} {...a11yProps(2)} onClick={doLogout} />
+                </Tabs>
                 <TabPanel value={value} index={0}>
                     <TaskAdd user={user} />
                 </TabPanel>
@@ -92,6 +99,10 @@ export default function Home() {
                    <TaskList user={user} searchTerm={searchParams.get("q")} />
                 </TabPanel>
             </Box>
+
+            <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+                <Alert onClose={handleCloseSnack} severity={snackSeverity} sx={{ width: '100%' }}>{snackMessage}</Alert>
+            </Snackbar>
         </>
     )
 }
